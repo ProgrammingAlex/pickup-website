@@ -45,13 +45,13 @@ const sports = [
 ---
 <BaseLayout
   title="Pick-Up — Find people to play with near you"
-  description="Anonymous pickup sports matchmaking. No account, no profile, no sign-up. Check in for your sport and get matched with players nearby."
+  description="Anonymous pickup sports matchmaking, launching spring 2027. No account, no profile, no sign-up. Check in for your sport and get matched with players nearby."
 >
   <!-- ========== HERO ========== -->
   <section class="hero">
     <div class="container hero-grid">
       <div class="hero-copy">
-        <p class="eyebrow">Coming soon to iOS &amp; Android</p>
+        <p class="eyebrow">Spring 2027 &middot; iOS &amp; Android</p>
         <h1>Somebody nearby wants to play. You just don't know who.</h1>
         <p class="lead">
           Pick-Up matches you with people close by who want to play the same
@@ -124,7 +124,7 @@ const sports = [
     </div>
   </section>
 
-  <!-- ========== NO ACCOUNT + CLOSING CTA ========== -->
+  <!-- ========== NO ACCOUNT ========== -->
   <section class="section">
     <div class="container narrow">
       <h2>No account. Seriously.</h2>
@@ -132,6 +132,19 @@ const sports = [
         No email, no password, no profile picture, no follower count.
         Everyone in a match shows up as Anonymous. We are not trying to
         build a social network — we are trying to get you outside.
+      </p>
+    </div>
+  </section>
+
+  <!-- ========== WHY SPRING + CLOSING CTA ========== -->
+  <section class="section section--tint">
+    <div class="container narrow">
+      <p class="eyebrow">Launching spring 2027</p>
+      <h2>We are waiting for the weather.</h2>
+      <p class="lead wide">
+        Pick-Up only works when there are people outside to play with, so we are
+        launching when the season starts rather than a few weeks before it ends.
+        Join the list and you will hear from us once — the week it goes live.
       </p>
 
       <div class="closing-signup">
@@ -158,9 +171,10 @@ const sports = [
   .hero-copy h1 { margin-block: var(--space-xs) var(--space-md); }
   .hero-copy .lead { margin-inline: auto; }
 
-  /* ================= PROBLEM / NO ACCOUNT ================= */
+  /* ================= PROBLEM / NO ACCOUNT / CLOSING ================= */
   .narrow { max-width: 780px; text-align: center; }
   .narrow h2 { margin-bottom: var(--space-sm); }
+  .narrow .eyebrow { margin-bottom: var(--space-xs); }
   .lead.wide { max-width: 62ch; margin-inline: auto; }
 
   .closing-signup { margin-top: var(--space-lg); }
