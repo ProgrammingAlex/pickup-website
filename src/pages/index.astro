@@ -1,17 +1,235 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PhoneFrame from '../components/PhoneFrame.astro';
+import Signup from '../components/Signup.astro';
+import { Image } from 'astro:assets';
 
+import shotHome from '../assets/screens/screen-home.png';
+import shotRadius from '../assets/screens/screen-radius.png';
+import shotSearching from '../assets/screens/screen-searching.png';
+import shotChat from '../assets/screens/screen-chat.png';
+
+import iconBasketball from '../assets/sports/basketball.png';
+import iconPickleball from '../assets/sports/pickleball.png';
+import iconSoccer from '../assets/sports/soccer.png';
+
+const steps = [
+  {
+    n: '01',
+    title: 'Set your sport and your range',
+    body: 'Pick a sport, use your current location or type in a different address, then drag the radius anywhere from 1 to 100 km. You decide how far you are willing to travel.',
+    img: shotRadius,
+    alt: 'Selecting a 56 km search radius on a map of the Toronto area',
+  },
+  {
+    n: '02',
+    title: 'Check in, then close the app',
+    body: 'You see exactly what you are about to search for before anything goes live. Tap check in and it stays active for 24 hours — no refreshing, no sitting on the screen waiting.',
+    img: shotSearching,
+    alt: 'A basketball search showing as active with a 24-hour countdown',
+  },
+  {
+    n: '03',
+    title: 'Land in a group chat',
+    body: 'When players match, everyone drops into a shared chat for 48 hours. Sort out a time and a place, then go play.',
+    img: shotChat,
+    alt: 'A group chat between matched players',
+  },
+];
+
+const sports = [
+  { name: 'Basketball', icon: iconBasketball },
+  { name: 'Pickleball', icon: iconPickleball },
+  { name: 'Soccer', icon: iconSoccer },
+];
 ---
+<BaseLayout
+  title="Pick-Up — Find people to play with near you"
+  description="Anonymous pickup sports matchmaking. No account, no profile, no sign-up. Check in for your sport and get matched with players nearby."
+>
+  <!-- ========== HERO ========== -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Coming soon to iOS &amp; Android</p>
+        <h1>Somebody nearby wants to play. You just don't know who.</h1>
+        <p class="lead">
+          Pick-Up matches you with people close by who want to play the same
+          sport — no account, no profile, no sign-up.
+        </p>
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+        <Signup variant="hero" />
+      </div>
+
+      <div class="hero-shot">
+        <PhoneFrame src={shotHome} alt="The Pick-Up home screen showing a globe with a search button" width={320} />
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PROBLEM ========== -->
+  <section class="section section--tint">
+    <div class="container narrow">
+      <h2>Everywhere to play. Nobody playing.</h2>
+      <p class="lead wide">
+        Your neighbourhood is full of empty parks, fields and courts — not
+        because nobody wants a game, but because nobody knows who else is free.
+        There is no way to find the handful of people a few streets over with a
+        free hour and nothing to do with it. Pick-Up is that missing step.
+      </p>
+    </div>
+  </section>
+
+  <!-- ========== HOW IT WORKS ========== -->
+  <section class="section" id="how">
+    <div class="container">
+      <div class="how-head">
+        <p class="eyebrow">How it works</p>
+        <h2>Set it up once. Get on with your day.</h2>
+      </div>
+
+      <ol class="steps">
+        {steps.map((s) => (
+          <li class="step">
+            <PhoneFrame src={s.img} alt={s.alt} width={260} />
+            <div class="step-text">
+              <span class="step-n">{s.n}</span>
+              <h3>{s.title}</h3>
+              <p class="muted">{s.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ========== SPORTS ========== -->
+  <section class="section section--tint">
+    <div class="container">
+      <div class="how-head">
+        <p class="eyebrow">Sports</p>
+        <h2>Three to start</h2>
+      </div>
+
+      <ul class="sports">
+        {sports.map((s) => (
+          <li class="sport">
+            <Image src={s.icon} alt="" width={88} height={88} />
+            <span>{s.name}</span>
+          </li>
+        ))}
+      </ul>
+
+      <p class="sports-note muted">More sports coming soon.</p>
+    </div>
+  </section>
+
+  <!-- ========== NO ACCOUNT + CLOSING CTA ========== -->
+  <section class="section">
+    <div class="container narrow">
+      <h2>No account. Seriously.</h2>
+      <p class="lead wide">
+        No email, no password, no profile picture, no follower count.
+        Everyone in a match shows up as Anonymous. We are not trying to
+        build a social network — we are trying to get you outside.
+      </p>
+
+      <div class="closing-signup">
+        <Signup variant="centered" />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ================= HERO =================
+     All alignment lives on .hero-grid and cascades down. */
+  .hero { padding-block: var(--space-lg) var(--space-xl); }
+
+  .hero-grid {
+    display: grid;
+    gap: var(--space-lg);
+    align-items: center;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .hero-copy { max-width: 560px; }
+  .hero-copy h1 { margin-block: var(--space-xs) var(--space-md); }
+  .hero-copy .lead { margin-inline: auto; }
+
+  /* ================= PROBLEM / NO ACCOUNT ================= */
+  .narrow { max-width: 780px; text-align: center; }
+  .narrow h2 { margin-bottom: var(--space-sm); }
+  .lead.wide { max-width: 62ch; margin-inline: auto; }
+
+  .closing-signup { margin-top: var(--space-lg); }
+
+  /* ================= SECTION HEADINGS ================= */
+  .how-head {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+  }
+  .how-head h2 { margin-top: var(--space-xs); }
+
+  /* ================= STEPS ================= */
+  .steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--space-lg);
+  }
+  .step {
+    display: grid;
+    gap: var(--space-md);
+    justify-items: center;
+    text-align: center;
+  }
+  .step-n {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--accent);
+    margin-bottom: var(--space-xs);
+  }
+  .step-text h3 { margin-bottom: var(--space-xs); }
+  .step-text p { max-width: 42ch; margin-inline: auto; }
+
+  /* ================= SPORTS ================= */
+  .sports {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-lg);
+  }
+  .sport {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-sm);
+  }
+  .sport span {
+    font-weight: 500;
+    font-size: 1.05rem;
+  }
+  .sports-note {
+    text-align: center;
+    margin-top: var(--space-lg);
+    font-size: 0.95rem;
+  }
+
+  /* ================= DESKTOP ================= */
+  @media (min-width: 860px) {
+    .hero-grid {
+      grid-template-columns: 1.1fr 0.9fr;
+      text-align: left;
+      justify-items: start;
+    }
+    .hero-copy .lead { margin-inline: 0; }
+
+    .steps { grid-template-columns: repeat(3, 1fr); align-items: start; }
+  }
+</style>

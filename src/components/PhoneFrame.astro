@@ -1,0 +1,24 @@
+---
+import { Image } from 'astro:assets';
+const { src, alt, width = 300 } = Astro.props;
+---
+<div class="phone" style={`--w:${width}px`}>
+  <Image src={src} alt={alt} widths={[300, 460, 600]} sizes={`${width}px`} />
+</div>
+
+<style>
+  .phone {
+    width: var(--w);
+    max-width: 100%;
+    border: 3px solid var(--border);
+    border-radius: 28px;
+    overflow: hidden;
+    background: var(--bg);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  }
+  .phone :global(img) {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+</style>

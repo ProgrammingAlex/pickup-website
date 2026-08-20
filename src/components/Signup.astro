@@ -1,0 +1,199 @@
+---
+// variant: "hero" (left-aligned on desktop) or "centered"
+const { variant = 'centered' } = Astro.props;
+---
+<div class:list={['signup-wrap', variant]}>
+  <form class="signup" novalidate>
+    <input
+      type="email"
+      name="email"
+      class="signup-email"
+      placeholder="you@email.com"
+      required
+      autocomplete="email"
+      aria-label="Email address"
+    />
+    <!-- Honeypot: hidden from people, filled in by bots. -->
+    <input
+      type="text"
+      name="company"
+      class="signup-hp"
+      tabindex="-1"
+      autocomplete="off"
+      aria-hidden="true"
+    />
+    <button type="submit" class="btn signup-btn">Notify me at launch</button>
+  </form>
+
+  <p class="signup-msg" role="status" aria-live="polite"></p>
+  <p class="fineprint muted">Free app. One email at launch, nothing else.</p>
+</div>
+
+<style>
+  .signup-wrap { width: 100%; }
+
+  .signup {
+    display: flex;
+    gap: var(--space-xs);
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: var(--space-md) auto 0;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .signup-email {
+    flex: 1 1 220px;
+    background: var(--surface-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font: inherit;
+    padding: 0.9rem 1rem;
+  }
+  .signup-email:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .signup-email.invalid { border-color: var(--accent); }
+
+  /* Visually removed, still focusable by bots that ignore CSS. */
+  .signup-hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+
+  .signup-btn[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .signup-msg {
+    margin-top: var(--space-xs);
+    font-size: 0.9rem;
+    min-height: 1.4em;
+    color: var(--text-muted);
+  }
+  .signup-msg.ok { color: var(--text); font-weight: 500; }
+  .signup-msg.err { color: var(--accent); }
+
+  .fineprint {
+    font-size: 0.85rem;
+    margin-top: var(--space-xs);
+  }
+
+  /* --- centered variant (default) --- */
+  .centered .signup-msg,
+  .centered .fineprint { text-align: center; }
+
+  /* --- hero variant: centred on mobile, left-aligned on desktop --- */
+  @media (min-width: 860px) {
+    .hero .signup {
+      margin-inline: 0;
+      justify-content: flex-start;
+    }
+    .hero .signup-msg,
+    .hero .fineprint { text-align: left; }
+  }
+</style>
+
+<script>
+  const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
+  const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+
+  /**
+   * @param {string} value
+   * @returns {boolean}
+   */
+  function looksLikeEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  }
+
+  document.querySelectorAll('.signup').forEach((element) => {
+    // Runtime guards that also narrow the type for the editor.
+    if (!(element instanceof HTMLFormElement)) return;
+
+    const form = element;
+    const wrap = form.closest('.signup-wrap');
+    if (!(wrap instanceof HTMLElement)) return;
+
+    const input = form.querySelector('.signup-email');
+    const honey = form.querySelector('.signup-hp');
+    const button = form.querySelector('.signup-btn');
+    const msg = wrap.querySelector('.signup-msg');
+
+    if (!(input instanceof HTMLInputElement)) return;
+    if (!(honey instanceof HTMLInputElement)) return;
+    if (!(button instanceof HTMLButtonElement)) return;
+    if (!(msg instanceof HTMLElement)) return;
+
+    const defaultLabel = button.textContent || 'Notify me at launch';
+
+    /**
+     * @param {string} text
+     * @param {string} [kind] - "ok", "err", or omitted
+     */
+    function say(text, kind) {
+      msg.textContent = text;
+      msg.className = kind ? 'signup-msg ' + kind : 'signup-msg';
+    }
+
+    input.addEventListener('input', () => {
+      input.classList.remove('invalid');
+      if (msg.classList.contains('err')) say('');
+    });
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const email = input.value.trim();
+
+      if (!looksLikeEmail(email)) {
+        input.classList.add('invalid');
+        say('That does not look like an email address.', 'err');
+        input.focus();
+        return;
+      }
+
+      // Bot filled the hidden field — pretend it worked, send nothing.
+      if (honey.value) {
+        say('You are on the list. We will email you once.', 'ok');
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = 'Adding you…';
+      say('');
+
+      try {
+        const response = await fetch(SUPABASE_URL + '/rest/v1/waitlist', {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_KEY,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify({ email: email, source: 'website' }),
+        });
+
+        // 409 = duplicate email. Same outcome from the visitor's side.
+        if (response.ok || response.status === 409) {
+          form.remove();
+          say('You are on the list. We will email you once, at launch.', 'ok');
+          return;
+        }
+
+        throw new Error('Request failed with status ' + response.status);
+      } catch (error) {
+        console.error('Waitlist signup failed:', error);
+        say('Something went wrong. Email PickUpHelp@proton.me and we will add you.', 'err');
+        button.disabled = false;
+        button.textContent = defaultLabel;
+      }
+    });
+  });
+</script>

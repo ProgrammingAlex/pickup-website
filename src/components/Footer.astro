@@ -1,0 +1,55 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="brand">
+      <Image src={logo} alt="" width={30} height={30} />
+      <span class="wordmark">Pick&#8209;Up</span>
+    </div>
+    <nav>
+      <a href="/privacy">Privacy Policy</a>
+      <a href="/terms">Terms of Service</a>
+      <a href="/support">Support</a>
+      <a href="/delete-data">Delete Your Data</a>
+      <a href="mailto:PickUpHelp@proton.me">Contact</a>
+    </nav>
+    <small class="muted">&copy; {year} Pick-Up. All rights reserved. Made in Ontario.</small>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--border);
+    padding-block: var(--space-md);
+  }
+  .footer-inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    align-items: center;
+    text-align: center;
+  }
+  .brand { display: flex; align-items: center; gap: 0.5rem; }
+  .brand :global(img) {
+    display: block;
+    width: 30px;
+    height: 30px;
+  }
+  .wordmark {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-size: 1.1rem;
+  }
+  nav {
+    display: flex;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  nav a { font-size: 0.95rem; color: var(--text-muted); text-decoration: none; }
+  nav a:hover { color: var(--text); }
+  small { font-size: 0.85rem; }
+</style>

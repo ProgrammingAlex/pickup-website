@@ -1,0 +1,190 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro';
+---
+<LegalLayout
+  title="Privacy Policy — Pick-Up"
+  description="How Pick-Up collects, uses, and protects your information. No account required, and your location is never shown to other users."
+  heading="Privacy Policy"
+  updated="July 2026"
+>
+  <div class="note">
+    <p><strong>The short version:</strong> Pick-Up does not require an account.
+    We collect the minimum data necessary to find you a game. Your location is
+    used only while you have an active search, and it is never shown to other
+    users. We never sell your data.</p>
+  </div>
+
+  <h2>1. Who We Are</h2>
+  <p>
+    Pick-Up is a sports matchmaking application for iOS and Android. This Privacy
+    Policy explains how we collect, use, and protect information when you use the
+    App. By using Pick-Up you agree to the practices described here.
+  </p>
+
+  <h2>2. Information We Collect</h2>
+
+  <h3>Anonymous identifier</h3>
+  <p>
+    When you open the App for the first time, an anonymous random identifier is
+    generated automatically by our authentication provider (Supabase). No email
+    address, name, phone number, or personal details are required or collected.
+  </p>
+
+  <h3>Nickname (optional)</h3>
+  <p>
+    You may choose to set a nickname visible to other players in group chats. This
+    is entirely optional. If you leave it blank you will appear as "Anonymous" to
+    other players.
+  </p>
+
+  <h3>Location</h3>
+  <p>
+    When you start a search, the App requests your device location or allows you to
+    select a location manually. This location is used to find other players
+    searching nearby. <strong>Your location is never displayed to other users.</strong>
+    The map and search radius shown in the App are visible only to you, on your own
+    device. Your precise location is not stored permanently — it is removed from our
+    servers when your search ends, expires, or you are matched with other players.
+  </p>
+
+  <h3>Chat messages</h3>
+  <p>
+    Messages sent in group chats are stored on our servers for the duration of the
+    chat (up to 48 hours). After 48 hours, the chat expires and messages are
+    deleted. You may delete any message you have sent at any time. Messages may be
+    retained for a limited period in association with user reports submitted
+    through the App.
+  </p>
+
+  <h3>Device token (push notifications)</h3>
+  <p>
+    With your permission, we store a device push notification token so we can
+    notify you when you are matched with other players. You can disable
+    notifications at any time through your device settings.
+  </p>
+
+  <h3>Reports and blocks</h3>
+  <p>
+    If you submit a report about another user, we store the report contents
+    (reason, a snapshot of recent messages, and your anonymous ID) for moderation
+    purposes. If you block a user, we store that you have blocked them so we can
+    prevent them from contacting you or being matched with you again.
+  </p>
+
+  <h2>3. How We Use Your Information</h2>
+  <ul>
+    <li>To match you with other players searching for the same sport nearby</li>
+    <li>To deliver group chat messages between matched players</li>
+    <li>To send push notifications when you are matched</li>
+    <li>To review reports, enforce our Terms of Service, and honour blocks</li>
+    <li>To diagnose crashes and improve app stability</li>
+  </ul>
+  <p>
+    We do not use your data for marketing, profiling, or any purpose beyond
+    operating the App.
+  </p>
+
+  <h2>4. Third-Party Services</h2>
+  <p>
+    Pick-Up uses the following third-party services. Each has its own privacy
+    policy governing how they handle data.
+  </p>
+
+  <h3>Supabase</h3>
+  <p>
+    Our backend database and authentication provider. Stores anonymous user IDs,
+    queue entries, match data, and chat messages.
+    <a href="https://supabase.com/privacy" target="_blank" rel="noopener">Supabase Privacy Policy</a>
+  </p>
+
+  <h3>Firebase (Google)</h3>
+  <p>
+    Used for push notifications (Firebase Cloud Messaging) and crash reporting
+    (Firebase Crashlytics). Firebase may collect device identifiers and crash data.
+    <a href="https://firebase.google.com/support/privacy" target="_blank" rel="noopener">Firebase Privacy Policy</a>
+  </p>
+
+  <h3>Mapbox</h3>
+  <p>
+    Used for map display and location search. Mapbox may receive location data to
+    render maps and geocode addresses.
+    <a href="https://www.mapbox.com/legal/privacy" target="_blank" rel="noopener">Mapbox Privacy Policy</a>
+  </p>
+
+  <h3>Google AdMob</h3>
+  <p>
+    Used to display a banner advertisement at the top of the screen while you use
+    the App. AdMob uses your device's advertising identifier to serve and measure
+    these ads. You can opt out of personalised ads through your device settings.
+    <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a>
+  </p>
+
+  <h2>5. Data Retention</h2>
+  <ul>
+    <li><strong>Location data:</strong> Not retained after search ends</li>
+    <li><strong>Chat messages:</strong> Deleted after 48 hours</li>
+    <li><strong>Queue entries:</strong> Deleted after 24 hours, or immediately upon cancellation</li>
+    <li><strong>Anonymous ID and nickname:</strong> Retained until deletion is requested</li>
+    <li><strong>Push notification tokens:</strong> Retained while you use the App</li>
+    <li><strong>Reports and blocks:</strong> Retained for moderation and safety purposes</li>
+  </ul>
+
+  <h2>6. Data Sharing</h2>
+  <p>
+    We do not sell or rent your information to third parties. The only sharing
+    that occurs is with the third-party service providers listed in Section 4,
+    which is necessary to operate the App — including sharing your device's
+    advertising identifier with Google AdMob to serve the banner ad described
+    above.
+  </p>
+  <p>
+    Other players in your group chat can see your nickname (or "Anonymous" if you
+    have not set one) and your messages. They cannot see your location, your
+    anonymous ID, or any other information.
+  </p>
+
+  <h2>7. Age Requirement</h2>
+  <p>
+    Pick-Up is intended for users aged 18 and over. We do not knowingly collect
+    information from anyone under 18. If we become aware that a user is under 18,
+    we will delete their data and remove their access promptly.
+  </p>
+
+  <h2>8. Your Rights</h2>
+  <p>You have the right to:</p>
+  <ul>
+    <li>Request deletion of your data by contacting us at the address below</li>
+    <li>Delete any message you have sent, at any time, from within the App</li>
+    <li>Block any other user, at any time, from within the App</li>
+    <li>Opt out of push notifications through your device settings</li>
+    <li>Opt out of personalised advertising through your device settings</li>
+    <li>Uninstall the App at any time</li>
+  </ul>
+  <p>
+    Because Pick-Up uses anonymous authentication, we cannot verify identity. Data
+    deletion requests will result in the removal of all data associated with your
+    anonymous ID, which you can find in the App under Settings. See the
+    <a href="/delete-data">Delete Your Data</a> page for instructions.
+  </p>
+
+  <h2>9. Security</h2>
+  <p>
+    We use industry-standard security practices including encrypted connections
+    (HTTPS/TLS) and row-level security policies on our database to protect your
+    data. No system is perfectly secure, and we cannot guarantee absolute
+    security.
+  </p>
+
+  <h2>10. Changes to This Policy</h2>
+  <p>
+    We may update this Privacy Policy from time to time. When we do, we will
+    update the "Last updated" date at the top of this page. Continued use of the
+    App after changes are posted constitutes acceptance of the updated policy.
+  </p>
+
+  <h2>11. Contact</h2>
+  <p>
+    For privacy questions or data deletion requests, contact us at:<br />
+    <a href="mailto:PickUpHelp@proton.me">PickUpHelp@proton.me</a>
+  </p>
+</LegalLayout>
