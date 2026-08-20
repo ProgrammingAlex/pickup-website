@@ -44,18 +44,19 @@ const sports = [
 ];
 ---
 <BaseLayout
-  title="Pick-Up — Find people to play with near you"
-  description="Anonymous pickup sports matchmaking, launching spring 2027. No account, no profile, no sign-up. Check in for your sport and get matched with players nearby."
+  title="Pick-Up — Check in for a sport, get matched with players nearby"
+  description="Check in for a sport and get matched with players nearby. No account, no profile, no sign-up. Launching spring 2027 on iOS and Android."
 >
   <!-- ========== HERO ========== -->
   <section class="hero">
     <div class="container hero-grid">
       <div class="hero-copy">
         <p class="eyebrow">Spring 2027 &middot; iOS &amp; Android</p>
-        <h1>Somebody nearby wants to play. You just don't know who.</h1>
+        <h1>Check in for a sport. Get matched with players nearby. No account needed.</h1>
         <p class="lead">
-          Pick-Up matches you with people close by who want to play the same
-          sport — no account, no profile, no sign-up.
+          Set your sport and how far you'll travel, then check in. Your search
+          stays live for 24 hours — close the app and we'll tell you when
+          someone matches.
         </p>
 
         <Signup variant="hero" />
@@ -63,6 +64,17 @@ const sports = [
 
       <div class="hero-shot">
         <PhoneFrame src={shotHome} alt="The Pick-Up home screen showing a globe with a search button" width={320} />
+
+        <ul class="hero-sports">
+          {sports.map((s) => (
+            <li>
+              <Image src={s.icon} alt={s.name} width={46} height={46} />
+            </li>
+          ))}
+        </ul>
+        <p class="hero-sports-note muted">
+          Basketball, pickleball and soccer at launch. More coming.
+        </p>
       </div>
     </div>
   </section>
@@ -103,29 +115,8 @@ const sports = [
     </div>
   </section>
 
-  <!-- ========== SPORTS ========== -->
-  <section class="section section--tint">
-    <div class="container">
-      <div class="how-head">
-        <p class="eyebrow">Sports</p>
-        <h2>Three to start</h2>
-      </div>
-
-      <ul class="sports">
-        {sports.map((s) => (
-          <li class="sport">
-            <Image src={s.icon} alt="" width={88} height={88} />
-            <span>{s.name}</span>
-          </li>
-        ))}
-      </ul>
-
-      <p class="sports-note muted">More sports coming soon.</p>
-    </div>
-  </section>
-
   <!-- ========== NO ACCOUNT ========== -->
-  <section class="section">
+  <section class="section section--tint">
     <div class="container narrow">
       <h2>No account. Seriously.</h2>
       <p class="lead wide">
@@ -137,7 +128,7 @@ const sports = [
   </section>
 
   <!-- ========== WHY SPRING + CLOSING CTA ========== -->
-  <section class="section section--tint">
+  <section class="section">
     <div class="container narrow">
       <p class="eyebrow">Launching spring 2027</p>
       <h2>We are waiting for the weather.</h2>
@@ -170,6 +161,35 @@ const sports = [
   .hero-copy { max-width: 560px; }
   .hero-copy h1 { margin-block: var(--space-xs) var(--space-md); }
   .hero-copy .lead { margin-inline: auto; }
+
+  .hero-shot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* --- sports strip under the phone --- */
+  .hero-sports {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-md) 0 0;
+    display: flex;
+    gap: var(--space-md);
+    align-items: center;
+    justify-content: center;
+  }
+  .hero-sports :global(img) {
+    display: block;
+    width: 46px;
+    height: 46px;
+    opacity: 0.85;
+  }
+  .hero-sports-note {
+    margin-top: var(--space-xs);
+    font-size: 0.85rem;
+    text-align: center;
+    max-width: 34ch;
+  }
 
   /* ================= PROBLEM / NO ACCOUNT / CLOSING ================= */
   .narrow { max-width: 780px; text-align: center; }
@@ -210,39 +230,20 @@ const sports = [
   .step-text h3 { margin-bottom: var(--space-xs); }
   .step-text p { max-width: 42ch; margin-inline: auto; }
 
-  /* ================= SPORTS ================= */
-  .sports {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--space-lg);
-  }
-  .sport {
-    display: grid;
-    justify-items: center;
-    gap: var(--space-sm);
-  }
-  .sport span {
-    font-weight: 500;
-    font-size: 1.05rem;
-  }
-  .sports-note {
-    text-align: center;
-    margin-top: var(--space-lg);
-    font-size: 0.95rem;
-  }
-
   /* ================= DESKTOP ================= */
   @media (min-width: 860px) {
     .hero-grid {
       grid-template-columns: 1.1fr 0.9fr;
       text-align: left;
       justify-items: start;
+      /* Top-align the columns so the phone can line up with the headline. */
+      align-items: start;
     }
     .hero-copy .lead { margin-inline: 0; }
+
+    /* Push the phone down past the eyebrow line so its top edge sits level
+       with the top of the h1. Eyebrow line-height + the h1's top margin. */
+    .hero-shot { margin-top: 1.85rem; }
 
     .steps { grid-template-columns: repeat(3, 1fr); align-items: start; }
   }
