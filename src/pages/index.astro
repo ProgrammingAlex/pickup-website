@@ -65,16 +65,18 @@ const sports = [
       <div class="hero-shot">
         <PhoneFrame src={shotHome} alt="The Pick-Up home screen showing a globe with a search button" width={320} />
 
-        <ul class="hero-sports">
-          {sports.map((s) => (
-            <li>
-              <Image src={s.icon} alt={s.name} width={46} height={46} />
-            </li>
-          ))}
-        </ul>
-        <p class="hero-sports-note muted">
-          Basketball, pickleball and soccer at launch. More coming.
-        </p>
+        <div class="hero-sports-block">
+          <p class="eyebrow">Sports</p>
+          <ul class="hero-sports">
+            {sports.map((s) => (
+              <li class="hero-sport">
+                <Image src={s.icon} alt="" width={52} height={52} />
+                <span>{s.name}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="hero-sports-note muted">More coming soon.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -169,26 +171,42 @@ const sports = [
   }
 
   /* --- sports strip under the phone --- */
+  .hero-sports-block {
+    margin-top: var(--space-md);
+    text-align: center;
+  }
+  .hero-sports-block .eyebrow { margin-bottom: var(--space-sm); }
+
   .hero-sports {
     list-style: none;
     padding: 0;
-    margin: var(--space-md) 0 0;
+    margin: 0;
     display: flex;
     gap: var(--space-md);
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
   }
-  .hero-sports :global(img) {
-    display: block;
-    width: 46px;
-    height: 46px;
-    opacity: 0.85;
+  .hero-sport {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    width: 5.5rem;
   }
+  .hero-sport :global(img) {
+    display: block;
+    width: 52px;
+    height: 52px;
+  }
+  .hero-sport span {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    line-height: 1.2;
+  }
+
   .hero-sports-note {
-    margin-top: var(--space-xs);
+    margin-top: var(--space-sm);
     font-size: 0.85rem;
-    text-align: center;
-    max-width: 34ch;
   }
 
   /* ================= PROBLEM / NO ACCOUNT / CLOSING ================= */
