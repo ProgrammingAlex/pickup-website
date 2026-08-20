@@ -1,28 +1,45 @@
 ---
 // variant: "hero" (left-aligned on desktop) or "centered"
 const { variant = 'centered' } = Astro.props;
+
+// Unique ids so two copies on one page don't collide.
+const uid = 'su-' + Math.random().toString(36).slice(2, 9);
 ---
 <div class:list={['signup-wrap', variant]}>
   <form class="signup" novalidate>
-    <input
-      type="email"
-      name="email"
-      class="signup-email"
-      placeholder="you@email.com"
-      required
-      autocomplete="email"
-      aria-label="Email address"
-    />
-    <!-- Honeypot: hidden from people, filled in by bots. -->
-    <input
-      type="text"
-      name="company"
-      class="signup-hp"
-      tabindex="-1"
-      autocomplete="off"
-      aria-hidden="true"
-    />
-    <button type="submit" class="btn signup-btn">Notify me at launch</button>
+    <fieldset class="platform">
+      <legend>Which phone do you have?</legend>
+      <label class="pill">
+        <input type="radio" name={uid + '-platform'} value="ios" data-platform />
+        <span>iPhone</span>
+      </label>
+      <label class="pill">
+        <input type="radio" name={uid + '-platform'} value="android" data-platform />
+        <span>Android</span>
+      </label>
+    </fieldset>
+
+    <div class="row">
+      <input
+        type="email"
+        name="email"
+        class="signup-email"
+        placeholder="you@email.com"
+        required
+        autocomplete="email"
+        aria-label="Email address"
+      />
+      <!-- Honeypot: hidden from people, filled in by bots. -->
+      <input
+        type="text"
+        name="company"
+        class="signup-hp"
+        tabindex="-1"
+        autocomplete="off"
+        aria-hidden="true"
+      />
+      <button type="submit" class="btn signup-btn">Notify me at launch</button>
+    </div>
   </form>
 
   <p class="signup-msg" role="status" aria-live="polite"></p>
@@ -34,12 +51,69 @@ const { variant = 'centered' } = Astro.props;
 
   .signup {
     display: flex;
-    gap: var(--space-xs);
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-direction: column;
+    gap: var(--space-sm);
     margin: var(--space-md) auto 0;
     width: 100%;
     max-width: 480px;
+  }
+
+  /* --- platform radio group --- */
+  .platform {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: var(--space-xs);
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .platform legend {
+    float: left;
+    width: 100%;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: var(--space-xs);
+    text-align: center;
+  }
+
+  .pill { cursor: pointer; }
+  .pill input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+  .pill span {
+    display: block;
+    padding: 0.55rem 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface-alt);
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  }
+  .pill:hover span { color: var(--text); }
+  .pill input:checked + span {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .pill input:focus-visible + span {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .platform.invalid span { border-color: var(--accent); }
+
+  /* --- email row --- */
+  .row {
+    display: flex;
+    gap: var(--space-xs);
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
   }
 
   .signup-email {
@@ -91,10 +165,10 @@ const { variant = 'centered' } = Astro.props;
 
   /* --- hero variant: centred on mobile, left-aligned on desktop --- */
   @media (min-width: 860px) {
-    .hero .signup {
-      margin-inline: 0;
-      justify-content: flex-start;
-    }
+    .hero .signup { margin-inline: 0; }
+    .hero .platform,
+    .hero .row { justify-content: flex-start; }
+    .hero .platform legend { text-align: left; }
     .hero .signup-msg,
     .hero .fineprint { text-align: left; }
   }
@@ -104,16 +178,9 @@ const { variant = 'centered' } = Astro.props;
   const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
   const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
-  /**
-   * @param {string} value
-   * @returns {boolean}
-   */
-  function looksLikeEmail(value) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-  }
+  const looksLikeEmail = (value = '') => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
   document.querySelectorAll('.signup').forEach((element) => {
-    // Runtime guards that also narrow the type for the editor.
     if (!(element instanceof HTMLFormElement)) return;
 
     const form = element;
@@ -123,33 +190,48 @@ const { variant = 'centered' } = Astro.props;
     const input = form.querySelector('.signup-email');
     const honey = form.querySelector('.signup-hp');
     const button = form.querySelector('.signup-btn');
-    const msg = wrap.querySelector('.signup-msg');
+    const message = wrap.querySelector('.signup-msg');
+    const group = form.querySelector('.platform');
 
     if (!(input instanceof HTMLInputElement)) return;
     if (!(honey instanceof HTMLInputElement)) return;
     if (!(button instanceof HTMLButtonElement)) return;
-    if (!(msg instanceof HTMLElement)) return;
+    if (!(message instanceof HTMLElement)) return;
+    if (!(group instanceof HTMLElement)) return;
 
     const defaultLabel = button.textContent || 'Notify me at launch';
 
-    /**
-     * @param {string} text
-     * @param {string} [kind] - "ok", "err", or omitted
-     */
-    function say(text, kind) {
-      msg.textContent = text;
-      msg.className = kind ? 'signup-msg ' + kind : 'signup-msg';
-    }
+    const say = (text = '', kind = '') => {
+      message.textContent = text;
+      message.className = kind ? 'signup-msg ' + kind : 'signup-msg';
+    };
+
+    const chosenPlatform = () => {
+      const picked = form.querySelector('input[data-platform]:checked');
+      return picked instanceof HTMLInputElement ? picked.value : '';
+    };
 
     input.addEventListener('input', () => {
       input.classList.remove('invalid');
-      if (msg.classList.contains('err')) say('');
+      if (message.classList.contains('err')) say();
+    });
+
+    group.addEventListener('change', () => {
+      group.classList.remove('invalid');
+      if (message.classList.contains('err')) say();
     });
 
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
 
       const email = input.value.trim();
+      const platform = chosenPlatform();
+
+      if (!platform) {
+        group.classList.add('invalid');
+        say('Pick iPhone or Android so we know which link to send you.', 'err');
+        return;
+      }
 
       if (!looksLikeEmail(email)) {
         input.classList.add('invalid');
@@ -166,7 +248,7 @@ const { variant = 'centered' } = Astro.props;
 
       button.disabled = true;
       button.textContent = 'Adding you…';
-      say('');
+      say();
 
       try {
         const response = await fetch(SUPABASE_URL + '/rest/v1/waitlist', {
@@ -177,13 +259,20 @@ const { variant = 'centered' } = Astro.props;
             'Content-Type': 'application/json',
             'Prefer': 'return=minimal',
           },
-          body: JSON.stringify({ email: email, source: 'website' }),
+          body: JSON.stringify({
+            email: email,
+            platform: platform,
+            source: 'website',
+          }),
         });
 
         // 409 = duplicate email. Same outcome from the visitor's side.
         if (response.ok || response.status === 409) {
           form.remove();
-          say('You are on the list. We will email you once, at launch.', 'ok');
+          const note = platform === 'android'
+            ? 'You are on the list. Android testers get an invite link first — watch your inbox.'
+            : 'You are on the list. We will email you the App Store link at launch.';
+          say(note, 'ok');
           return;
         }
 
