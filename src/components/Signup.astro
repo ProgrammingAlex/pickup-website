@@ -2,7 +2,7 @@
 // variant: "hero" (left-aligned on desktop) or "centered"
 const { variant = 'centered' } = Astro.props;
 
-// Unique ids so two copies on one page don't collide.
+// Unique radio group name so two copies on one page don't collide.
 const uid = 'su-' + Math.random().toString(36).slice(2, 9);
 ---
 <div class:list={['signup-wrap', variant]}>
@@ -151,13 +151,19 @@ const uid = 'su-' + Math.random().toString(36).slice(2, 9);
     min-height: 1.4em;
     color: var(--text-muted);
   }
-  .signup-msg.ok { color: var(--text); font-weight: 500; }
+  .signup-msg.ok {
+    color: var(--text);
+    font-weight: 500;
+    font-size: 1rem;
+    margin-top: var(--space-md);
+  }
   .signup-msg.err { color: var(--accent); }
 
   .fineprint {
     font-size: 0.85rem;
     margin-top: var(--space-xs);
   }
+  .fineprint.hidden { display: none; }
 
   /* --- centered variant (default) --- */
   .centered .signup-msg,
@@ -177,8 +183,17 @@ const uid = 'su-' + Math.random().toString(36).slice(2, 9);
 <script>
   const SUPABASE_URL = import.meta.env.PUBLIC_SUPABASE_URL;
   const SUPABASE_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+  const STORAGE_KEY = 'pickup-waitlist-platform';
 
   const looksLikeEmail = (value = '') => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+
+  const successNote = (platform = '') =>
+    platform === 'android'
+      ? 'You are on the list. Android testers get an invite link first — watch your inbox.'
+      : 'You are on the list. We will email you the App Store link at launch.';
+
+  // Every copy of the form on the page, collected before any handler runs.
+  const instances = [];
 
   document.querySelectorAll('.signup').forEach((element) => {
     if (!(element instanceof HTMLFormElement)) return;
@@ -192,13 +207,39 @@ const uid = 'su-' + Math.random().toString(36).slice(2, 9);
     const button = form.querySelector('.signup-btn');
     const message = wrap.querySelector('.signup-msg');
     const group = form.querySelector('.platform');
+    const fineprint = wrap.querySelector('.fineprint');
 
     if (!(input instanceof HTMLInputElement)) return;
     if (!(honey instanceof HTMLInputElement)) return;
     if (!(button instanceof HTMLButtonElement)) return;
     if (!(message instanceof HTMLElement)) return;
     if (!(group instanceof HTMLElement)) return;
+    if (!(fineprint instanceof HTMLElement)) return;
 
+    instances.push({ form, wrap, input, honey, button, message, group, fineprint });
+  });
+
+  // Put EVERY form on the page into the signed-up state.
+  const markAllDone = (platform = '') => {
+    const note = successNote(platform);
+    instances.forEach((item) => {
+      item.form.remove();
+      item.fineprint.classList.add('hidden');
+      item.message.textContent = note;
+      item.message.className = 'signup-msg ok';
+    });
+  };
+
+  // Already signed up in a previous visit? Skip straight to the done state.
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) markAllDone(saved);
+  } catch (error) {
+    // Private browsing can block localStorage. Not worth failing over.
+  }
+
+  instances.forEach((item) => {
+    const { form, input, honey, button, message, group } = item;
     const defaultLabel = button.textContent || 'Notify me at launch';
 
     const say = (text = '', kind = '') => {
@@ -242,7 +283,7 @@ const uid = 'su-' + Math.random().toString(36).slice(2, 9);
 
       // Bot filled the hidden field — pretend it worked, send nothing.
       if (honey.value) {
-        say('You are on the list. We will email you once.', 'ok');
+        markAllDone(platform);
         return;
       }
 
@@ -268,11 +309,12 @@ const uid = 'su-' + Math.random().toString(36).slice(2, 9);
 
         // 409 = duplicate email. Same outcome from the visitor's side.
         if (response.ok || response.status === 409) {
-          form.remove();
-          const note = platform === 'android'
-            ? 'You are on the list. Android testers get an invite link first — watch your inbox.'
-            : 'You are on the list. We will email you the App Store link at launch.';
-          say(note, 'ok');
+          try {
+            localStorage.setItem(STORAGE_KEY, platform);
+          } catch (error) {
+            // Storage blocked — the in-page state below still works.
+          }
+          markAllDone(platform);
           return;
         }
 
