@@ -9,8 +9,9 @@ import logo from '../assets/logo.png';
       <span class="wordmark">Pick&#8209;Up</span>
     </a>
     <nav>
-      <a href="/#how" class="nav-accent">How it works</a>
+      <a href="/#how" class="nav-hide-sm">How it works</a>
       <a href="/support">Support</a>
+      <a href="/get" class="nav-cta">Get the app</a>
     </nav>
   </div>
 </header>
@@ -48,18 +49,33 @@ import logo from '../assets/logo.png';
     letter-spacing: 0.01em;
   }
 
-  nav { display: flex; gap: var(--space-sm); }
+  nav {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: center;
+  }
   nav a {
     font-size: 0.95rem;
     color: var(--text-muted);
     text-decoration: none;
-    transition: color 0.15s ease;
+    transition: color 0.15s ease, background 0.15s ease;
   }
   nav a:hover { color: var(--text); }
 
-  .nav-accent {
-    color: var(--accent);
+  nav a.nav-cta {
+    background: var(--accent);
+    color: #fff;
     font-weight: 650;
+    padding: 0.45rem 0.95rem;
+    border-radius: 999px;
   }
-  .nav-accent:hover { color: var(--text); }
+  nav a.nav-cta:hover {
+    background: var(--accent-dark);
+    color: #fff;
+  }
+
+  /* Phones: keep the header to Support + Get the app. */
+  @media (max-width: 480px) {
+    .nav-hide-sm { display: none; }
+  }
 </style>

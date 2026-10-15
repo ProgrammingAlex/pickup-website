@@ -1,0 +1,53 @@
+---
+// pickuphq.app/get — the link inside every Pick-Up QR code.
+// iPhone  -> App Store
+// Android -> Google Play once PLAY_STORE_URL is set, until then the test invite
+// Anything else (a computer) -> stays here and shows the buttons + QR code.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import StoreLinks from '../components/StoreLinks.astro';
+import { APP_STORE_URL, PLAY_STORE_URL, ANDROID_FALLBACK } from '../config';
+
+const androidTarget = PLAY_STORE_URL || ANDROID_FALLBACK;
+---
+<BaseLayout
+  title="Get Pick-Up"
+  description="Download Pick-Up — find people to play sports with near you."
+  noindex
+>
+  <script slot="head" is:inline define:vars={{ ios: APP_STORE_URL, android: androidTarget }}>
+    (function () {
+      var ua = navigator.userAgent || '';
+      // iPadOS reports itself as a Mac, so also check for a touch screen.
+      var isIOS = /iPhone|iPad|iPod/.test(ua) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      var isAndroid = /Android/i.test(ua);
+      if (isIOS) location.replace(ios);
+      else if (isAndroid) location.replace(android);
+    })();
+  </script>
+
+  <section class="section">
+    <div class="container get">
+      <p class="eyebrow">Get Pick-Up</p>
+      <h1>Find people to play with near you.</h1>
+      <p class="lead">
+        On your phone this page opens the right store by itself. On a computer,
+        scan the code with your phone's camera or use the buttons below.
+      </p>
+
+      <StoreLinks variant="centered" qr />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .get {
+    max-width: 640px;
+    text-align: center;
+  }
+  .get h1 {
+    font-size: clamp(2.2rem, 6vw, 3.4rem);
+    margin-block: var(--space-xs) var(--space-sm);
+  }
+  .get .lead { margin-inline: auto; }
+</style>
