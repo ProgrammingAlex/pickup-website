@@ -1,0 +1,10 @@
+{
+  "ios": {
+    "minBuild": 0,
+    "storeUrl": "https://apps.apple.com/app/id6785659924"
+  },
+  "android": {
+    "minBuild": 0,
+    "storeUrl": "https://play.google.com/store/apps/details?id=ca.pickupsports.app"
+  }
+}
